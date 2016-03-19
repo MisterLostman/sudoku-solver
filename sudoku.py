@@ -13,21 +13,22 @@ class Grid:
         for row in range(n+1):
             for col in range(n+1):
                 if row == 0 or col == 0:
-                    self.valid[row][col] = 0
+                    self.valid[row][col] = []
                 if self.grid[row][col] != 0:
-                    self.valid[row][col] = 0
+                    self.valid[row][col] = []
                     current = self.grid[row][col]
                     for i in range(1,n+1):
-                        if self.valid[row][i] != 0 and current in self.valid[row][i]:
+                        if current in self.valid[row][i]:
                             self.valid[row][i].remove(current)
-                        if self.valid[i][col] != 0 and current in self.valid[i][col]:
+                        if current in self.valid[i][col]:
                             self.valid[i][col].remove(current)
-                    #check in subgrids
+                    
                     sub = self.subgrid(row,col)
-                    for i in range((sub[0]+1)*self.grid_size-1,(sub[0]+1)*self.grid_size+1):
-                        for j in range((sub[1]+1)*self.grid_size-1,(sub[1]+1)*self.grid_size+1):
-                            if self.valid[i][j] != 0 and current in self.valid[i][j]:                                
-                                self.valid[i][j].remove(current)                                
+                    for r in sub[0]:
+                        for c in sub[1]:
+                            if current in self.valid[r][c]:
+                                self.valid[r][c].remove(current)                                
+                                                    
                     
     def display_grid(self):
         for row in range(1,n+1):
@@ -42,7 +43,12 @@ class Grid:
                 print('-'*(2*n+1))
     
     def subgrid(self,row,col):
-        return [(row-1)//self.grid_size, (col-1)//self.grid_size]
+        row = (row-1)//self.grid_size
+        col = (col-1)//self.grid_size
+        grid_rows = [i for i in range((row+1)*2,(row+1)*2-self.grid_size,-1)]
+        grid_cols = [i for i in range((col+1)*2,(col+1)*2-self.grid_size,-1)]
+        
+        return [grid_rows, grid_cols]
                 
         
     def display_valid(self):
@@ -63,7 +69,7 @@ class Grid:
         while not solved and flags < 100:
             for row in range(1,n+1):
                 for col in range(1,n+1):
-                    if self.valid[row][col] != 0 and len(self.valid[row][col]) == 1:
+                    if len(self.valid[row][col]) == 1:
                         value = self.valid[row][col][0]
                         self.grid[row][col] = value
                         self.update_valid(row,col,value)
@@ -78,35 +84,17 @@ class Grid:
                         
     def update_valid(self,row,col,current):
         for i in range(1,n+1):
-            if self.valid[row][i] != 0 and current in self.valid[row][i]:
+            if current in self.valid[row][i]:
                 self.valid[row][i].remove(current)
-            if self.valid[i][col] != 0 and current in self.valid[i][col]:
+            if current in self.valid[i][col]:
                 self.valid[i][col].remove(current)
+                
         sub = self.subgrid(row,col)
-        for i in range((sub[0]+1)*self.grid_size-1,(sub[0]+1)*self.grid_size+1):
-            for j in range((sub[1]+1)*self.grid_size-1,(sub[1]+1)*2+1):
-                if self.valid[i][j] != 0 and current in self.valid[i][j]:                                
-                    self.valid[i][j].remove(current)  
+        for r in sub[0]:
+            for c in sub[1]:
+                if current in self.valid[r][c]:
+                    self.valid[r][c].remove(current)
                     
-#initial = {(1,1,1),(1,4,2),(4,1,3),(3,2,4),(2,3,1),(4,4,4)}
-#g = Grid(4,2,initial)
-#g.solve()
-#g.display_grid()
 
-#initial = {(1,2,4),(2,1,1),(1,4,1),(4,1,2),(4,3,3),(3,4,2)}
-#h = Grid(4,2,initial)
-#h.display_grid()
-#h.solve()
-#print()
-#h.display_grid()
 
-initial = {(4,1,3),(3,2,1),(3,3,3),(2,3,2),(1,4,4)}
-h = Grid(4,2,initial)
-h.display_grid()
-h.solve()
-print()
-h.display_grid()
 
-#for j in range(3,-1,-1):
-#    for i in range(3,-1,-1):
-#        print(i,j)
