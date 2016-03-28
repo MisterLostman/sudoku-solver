@@ -12,7 +12,14 @@ def build_grid(n,gz,initial):
 
 def parse_puzzle(puzzle_string):
     return list(puzzle_string)
-    
+
+def build_adjacency_list(grid,n,gz):
+    adjacent = {}
+    for i in range(len(grid)):
+        adjacent[i] = get_peers(i,n,gz)
+        
+    return adjacent
+        
 def display_grid(grid,n,gz):
     for i in range(n):
         r = []
@@ -35,8 +42,8 @@ def get_peers(index,n,gz):
          (i//n in range(subr[0],subr[1]) and i%n in range(subc[0],subc[1])))}  
     return rc - {index}
 
-def valid_move(grid,index,value,n,gz):
-    connections = get_peers(index,n,gz)
+def valid_move(grid,index,value,adjacent):
+    connections = adjacent[index]    
     for peer in connections:        
         if grid[peer] == value:
             return False            
@@ -49,8 +56,7 @@ def solved(grid):
 def get_next(grid):
     return grid.index('.')
 
-
-def solve(grid,n,gz):
+def solve(grid,n,gz,adjacent):
     if solved(grid):
         display_grid(grid,9,3)
         return True
@@ -58,9 +64,9 @@ def solve(grid,n,gz):
     next_square = get_next(grid)
     for k in range(1,n+1):
         value = str(k)
-        if valid_move(grid,next_square,value,n,gz):
+        if valid_move(grid,next_square,value,adjacent):
             grid[next_square] = value
-            if solve(grid,n,gz):
+            if solve(grid,n,gz,adjacent):
                 return True
             else:
                 grid[next_square] = '.'       
@@ -68,4 +74,8 @@ def solve(grid,n,gz):
     return False  
         
 
+h = parse_puzzle('.9..38...3.6..2.8.......9....96..5.41...2...'\
+                            '66.2..93....4.......8.5..4.1...38..7.')
 
+a = build_adjacency_list(h,9,3)
+solve(h,9,3,a)

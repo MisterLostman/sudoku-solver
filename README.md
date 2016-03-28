@@ -1,4 +1,3 @@
 # sudoku-solver
-Simple Sudoku solver in Python
+A simple sudoku solver written in Python, using backtracking search.
 
-Currently supports 4x4 Sudoku puzzles
