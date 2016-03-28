@@ -52,7 +52,6 @@ def valid_move(grid,index,value,adjacent):
 def solved(grid):
     return '.' not in grid
 
-
 def get_next(grid):
     return grid.index('.')
 
@@ -69,13 +68,5 @@ def solve(grid,n,gz,adjacent):
             if solve(grid,n,gz,adjacent):
                 return True
             else:
-                grid[next_square] = '.'       
-    
-    return False  
-        
-
-h = parse_puzzle('.9..38...3.6..2.8.......9....96..5.41...2...'\
-                            '66.2..93....4.......8.5..4.1...38..7.')
-
-a = build_adjacency_list(h,9,3)
-solve(h,9,3,a)
+                grid[next_square] = '.'   
+    return False          
